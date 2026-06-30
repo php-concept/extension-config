@@ -14,11 +14,10 @@ final class ConfigServiceProvider extends AbstractServiceProvider implements Boo
 {
     private const string EXTENSION_NAME = 'config';
     private const string APP_ENV_KEY = 'APP_ENV';
-    private const string DEFAULT_CONFIG_DIR = 'config';
 
     public function __construct(
         private readonly string $root,
-        private readonly string $configDir = self::DEFAULT_CONFIG_DIR,
+        private readonly string $configDirectory,
     ) {}
 
     public function provides(string $id): bool
@@ -35,7 +34,7 @@ final class ConfigServiceProvider extends AbstractServiceProvider implements Boo
         $container = $this->getContainer();
         $dispatcher = EventDispatcherResolver::optional($container);
 
-        $nhConfig = new NhConfig($this->rootPath($this->configDir));
+        $nhConfig = new NhConfig($this->configDirectory);
         $envData = $this->loadDotEnv($this->root);
         $this->loadOverrideConfig($nhConfig, $envData);
         $this->mergeEnvData($nhConfig, $envData);
@@ -48,15 +47,6 @@ final class ConfigServiceProvider extends AbstractServiceProvider implements Boo
             extensionName: self::EXTENSION_NAME,
             anchorId: ConfigInterface::class,
         ));
-    }
-
-    private function rootPath(string $path = ''): string
-    {
-        if ($path === '') {
-            return $this->root;
-        }
-
-        return $this->root . '/' . ltrim($path, '/');
     }
 
     /**
@@ -75,7 +65,7 @@ final class ConfigServiceProvider extends AbstractServiceProvider implements Boo
     private function loadOverrideConfig(NhConfig $nhConfig, array $envData): void
     {
         $env = $envData[self::APP_ENV_KEY] ?? '';
-        $overrideConfigPath = $this->rootPath($this->configDir . '/' . $env);
+        $overrideConfigPath = rtrim($this->configDirectory, '/') . '/' . $env;
         if (is_dir($overrideConfigPath)) {
             $overrideConfig = new NhConfig($overrideConfigPath);
             $nhConfig->merge($overrideConfig);

@@ -1,7 +1,6 @@
 {
     "name": "php-concept/extension-config",
     "description": "Concept Config extension — PHP config files and .env merge",
-    "version": "1.0.0",
     "type": "library",
     "license": "MIT",
     "autoload": {
