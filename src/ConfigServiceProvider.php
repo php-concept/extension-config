@@ -54,9 +54,12 @@ final class ConfigServiceProvider extends AbstractServiceProvider implements Boo
      */
     private function loadDotEnv(string $rootPath): array
     {
-        $dotenv = Dotenv::createImmutable($rootPath);
+        $envFile = $rootPath . '/.env';
+        if (!is_file($envFile)) {
+            return [];
+        }
 
-        return $dotenv->load();
+        return Dotenv::createImmutable($rootPath)->load();
     }
 
     /**
