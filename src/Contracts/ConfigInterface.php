@@ -25,4 +25,38 @@ interface ConfigInterface
      * @return array<mixed>
      */
     public function getArray(string $key, array $default = []): array;
+
+    /**
+     * @param array<mixed> $default
+     * @return list<string>
+     */
+    public function getStringList(string $key, array $default = []): array;
+
+    /**
+     * @param array<mixed> $default
+     * @return array<string, string>
+     */
+    public function getStringMap(string $key, array $default = []): array;
+
+    /**
+     * @param array<mixed> $default
+     * @return list<class-string>
+     */
+    public function getClassStringList(string $key, array $default = []): array;
+
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @param array<mixed> $default
+     * @return list<class-string<T>>
+     */
+    public function getClassList(string $key, string $class, array $default = []): array;
+
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @param array<mixed> $default
+     * @return array<string, class-string<T>>
+     */
+    public function getClassMap(string $key, string $class, array $default = []): array;
 }

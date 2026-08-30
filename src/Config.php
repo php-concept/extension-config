@@ -65,4 +65,88 @@ final class Config implements ConfigInterface
 
         return $value;
     }
+
+    /**
+     * @param array<mixed> $default
+     * @return list<string>
+     */
+    public function getStringList(string $key, array $default = []): array
+    {
+        $items = [];
+        foreach ($this->getArray($key, $default) as $item) {
+            if (is_string($item)) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @param array<mixed> $default
+     * @return array<string, string>
+     */
+    public function getStringMap(string $key, array $default = []): array
+    {
+        $map = [];
+        foreach ($this->getArray($key, $default) as $mapKey => $value) {
+            if (is_string($mapKey) && is_string($value)) {
+                $map[$mapKey] = $value;
+            }
+        }
+
+        return $map;
+    }
+
+    /**
+     * @param array<mixed> $default
+     * @return list<class-string>
+     */
+    public function getClassStringList(string $key, array $default = []): array
+    {
+        $items = [];
+        foreach ($this->getArray($key, $default) as $item) {
+            if (is_string($item) && $item !== '' && class_exists($item)) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @param array<mixed> $default
+     * @return list<class-string<T>>
+     */
+    public function getClassList(string $key, string $class, array $default = []): array
+    {
+        $items = [];
+        foreach ($this->getArray($key, $default) as $item) {
+            if (is_string($item) && $item !== '' && is_a($item, $class, true)) {
+                $items[] = $item;
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @param array<mixed> $default
+     * @return array<string, class-string<T>>
+     */
+    public function getClassMap(string $key, string $class, array $default = []): array
+    {
+        $map = [];
+        foreach ($this->getArray($key, $default) as $mapKey => $value) {
+            if (is_string($mapKey) && is_string($value) && $value !== '' && is_a($value, $class, true)) {
+                $map[$mapKey] = $value;
+            }
+        }
+
+        return $map;
+    }
 }
